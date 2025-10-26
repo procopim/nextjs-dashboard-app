@@ -47,6 +47,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
       message: 'Missing Fields. Failed to Create Invoice.',
     };
   }
+    const { amount, customerId, status } = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0]; //YYYY-MM-DD
     try {
@@ -89,13 +90,24 @@ export async function createInvoice(prevState: State, formData: FormData) {
 // Use Zod to update the expected types
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
  
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({
+export async function updateInvoice(
+  id: string, 
+  prevState: State,
+  formData: FormData) {
+  const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
- 
+
+  if (!validatedFields.success) {
+    console.error('Error validating fields: ', validatedFields.error.flatten().fieldErrors);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
+  const { customerId, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
   try{
     await sql`
@@ -106,6 +118,7 @@ export async function updateInvoice(id: string, formData: FormData) {
   } catch(error) {
     console.error('Error updating invoice: ', error);
     return {
+      errors: error,
       message: 'Database Error: Failed to Update Invoice.',
     };
   }
@@ -116,7 +129,6 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error('Delete invoice action not implemented yet.');
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
 }
