@@ -2,6 +2,7 @@ import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
  
 export default async function Page(props : { params: Promise< { id: string }>}) {
 //In addition to searchParams, page components also accept a prop called params which you can use to access the id. 
@@ -31,4 +32,8 @@ export default async function Page(props : { params: Promise< { id: string }>}) 
       <Form invoice={invoice} customers={customers} />
     </main>
   );
+}
+
+export const metadata: Metadata = {
+  title: 'Invoices - Edit',
 }
