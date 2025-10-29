@@ -24,16 +24,14 @@ const FormSchema = z.object({
     date: z.string(),
 });
 
-// export type State = {
-//   errors?: {
-//     customerId?: string[];
-//     amount?: string[];
-//     status?: string[];
-//   } | unknown;
-//   message?: string | null;
-// };
-
-export type State = { errors?: Record<string, string[]>; message?: string | null }
+export type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  } | unknown;
+  message?: string | null;
+};
     
 const CreateInvoice = FormSchema.omit({id: true, date: true});
 
