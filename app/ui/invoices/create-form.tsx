@@ -15,7 +15,7 @@ import { Button } from '@/app/ui/button';
 
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
-  const initialState: State = { message: '', errors: {} };
+  const initialState: State = { message: null, errors: {} };
   const [state, formAction] = useActionState(createInvoice, initialState);
   //formAction call below is referencing createInvoice; this is what useActionState does. Now that its a client component,
   // React recognizes formAction is a Server Action so it serializes the formData and sends to server.
